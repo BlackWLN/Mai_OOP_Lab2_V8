@@ -1,32 +1,34 @@
-cmake_minimum_required(VERSION 3.14)
-project(lab2)
+cmake_minimum_required(VERSION 3.10)
+project(FourProject)
 
-set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror=maybe-uninitialized")
 
 include(FetchContent)
 FetchContent_Declare(
   googletest
-  URL https://github.com/google/googletest/archive/03597a01ee50ed33e9dfd640b249b4be3799d395.zip
+  GIT_REPOSITORY https://github.com/google/googletest.git
+  GIT_TAG v1.15.0
+  TLS_VERIFY false
 )
+set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 
+# Add library for Four class
 add_library(${CMAKE_PROJECT_NAME}_lib src/seven.cpp)
-add_executable(${CMAKE_PROJECT_NAME}_exe main.cpp)
 
-target_link_libraries(${CMAKE_PROJECT_NAME}_exe PRIVATE ${CMAKE_PROJECT_NAME}_lib)
+# Add executable for the main program (if needed)
+add_executable(${CMAKE_PROJECT_NAME}.out src/main.cpp)
 
+target_link_libraries(${CMAKE_PROJECT_NAME}.out PRIVATE ${CMAKE_PROJECT_NAME}_lib)
 
+# Add test executable
 enable_testing()
 
-add_executable(
-  test_01
-  test/test_01.cpp
-)
-target_link_libraries(
-  test_01
-  GTest::gtest_main
-)
+add_executable(tests tests/tests_01.cpp)
+target_link_libraries(tests PRIVATE ${CMAKE_PROJECT_NAME}_lib gtest_main)
 
-include(GoogleTest)
-gtest_discover_tests(test_01)
+# Add tests to test suite
+add_test(NAME FourTests COMMAND tests)
