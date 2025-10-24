@@ -31,4 +31,4 @@ private:
   size_t size;
 };
 
-#endif // FOUR_H
+#endif // SEVEN_H
